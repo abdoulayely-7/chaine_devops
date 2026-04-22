@@ -38,7 +38,7 @@ pipeline {
                     sh '''
                         npx sonar-scanner \
                         -Dsonar.projectKey=chaine_devops \
-                        -Dsonar.organization=LyDevTech \
+                        -Dsonar.organization=abdoulayely-7 \
                         -Dsonar.sources=src \
                         -Dsonar.host.url=https://sonarcloud.io \
                         -Dsonar.login=$SONAR_TOKEN
