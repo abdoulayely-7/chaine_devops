@@ -32,6 +32,21 @@ pipeline {
             }
         }
 
+        stage('SonarCloud Analysis') {
+            steps {
+                withSonarQubeEnv('SonarCloud') {
+                    sh '''
+                        npx sonar-scanner \
+                        -Dsonar.projectKey=chaine_devops \
+                        -Dsonar.organization=LyDevTech \
+                        -Dsonar.sources=src \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.login=$SONAR_TOKEN
+                    '''
+                }
+            }
+        }
+
         stage('Build React') {
             steps {
                 sh 'npm run build'
