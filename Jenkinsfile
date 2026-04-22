@@ -93,6 +93,17 @@ pipeline {
                 }
             }
         }
+
+        stage('Install Terraform') {
+            steps {
+                sh '''
+                    wget https://releases.hashicorp.com/terraform/1.7.5/terraform_1.7.5_linux_amd64.zip
+                    unzip terraform_1.7.5_linux_amd64.zip
+                    mv terraform /usr/local/bin/
+                    terraform -version
+                '''
+            }
+        }
         stage('Terraform Init') {
             steps {
                 dir('terraform') {
