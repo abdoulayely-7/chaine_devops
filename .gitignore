@@ -49,3 +49,16 @@ jenkins_home/
 
 # OS
 Thumbs.db
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# override local
+override.tf
+override.tf.json
+
+# lock file (optionnel mais recommandé)
+.terraform.lock.hcl
