@@ -81,7 +81,13 @@ pipeline {
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
+                        # Push version build
                         docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+
+                        # 👉 créer le tag latest
+                        docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
+
+                        # 👉 push latest
                         docker push ${DOCKER_IMAGE}:latest
                     '''
                 }
