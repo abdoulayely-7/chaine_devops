@@ -59,10 +59,14 @@ pipeline {
             }
         }
 
-        stage('Trivy Scan') {
+        sstage('Trivy Scan') {
             steps {
                 sh '''
-                    trivy image --exit-code 1 --severity HIGH,CRITICAL \
+                    docker run --rm \
+                    -v /var/run/docker.sock:/var/run/docker.sock \
+                    aquasec/trivy image \
+                    --exit-code 1 \
+                    --severity HIGH,CRITICAL \
                     ${DOCKER_IMAGE}:${DOCKER_TAG}
                 '''
             }
