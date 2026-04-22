@@ -4,7 +4,7 @@ pipeline {
         nodejs 'NodeJS-22'
     }
     environment {
-        DOCKER_IMAGE = 'chaine_devops'
+        DOCKER_IMAGE = 'abdoulayely777/chaine_devops'
         DOCKER_TAG   = "${BUILD_NUMBER}"
     }
     stages {
@@ -69,6 +69,22 @@ pipeline {
                     --severity HIGH,CRITICAL \
                     ${DOCKER_IMAGE}:${DOCKER_TAG}
                 '''
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker_chaine_devops',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
+                        docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                        docker push ${DOCKER_IMAGE}:latest
+                    '''
+                }
             }
         }
     }
