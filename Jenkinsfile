@@ -18,9 +18,20 @@ pipeline {
             }
         }
 
+        // 👇 ICI tu ajoutes le clean
+        stage('Clean Workspace') {
+            steps {
+                sh '''
+                    rm -rf node_modules
+                    rm -rf package-lock.json
+                    npm cache clean --force
+                '''
+            }
+        }
+
         stage('Install') {
             steps {
-                sh 'npm ci'
+                sh 'npm install'
             }
         }
 
