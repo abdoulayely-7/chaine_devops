@@ -1,17 +1,13 @@
 pipeline {
     agent any
-
     tools {
         nodejs 'NodeJS-22'
     }
-
     environment {
         DOCKER_IMAGE = 'chaine_devops'
-        DOCKER_TAG = "${BUILD_NUMBER}"
+        DOCKER_TAG   = "${BUILD_NUMBER}"
     }
-
     stages {
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -20,13 +16,19 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'npm ci'
+                sh '''
+                    node --version
+                    npm --version
+                    # npm ci exige package-lock.json synchronisé
+                    npm ci --prefer-offline || (rm -rf node_modules package-lock.json && npm install)
+                '''
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm run test'
+                // --run pour éviter le mode watch de Vitest en CI
+                sh 'npm run test -- --run'
             }
         }
 
@@ -40,6 +42,15 @@ pipeline {
             steps {
                 sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
             }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Image construite: ${DOCKER_IMAGE}:${DOCKER_TAG}"
+        }
+        failure {
+            echo "❌ Pipeline échoué — vérifier les logs"
         }
     }
 }
