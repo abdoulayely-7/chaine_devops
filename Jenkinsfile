@@ -58,6 +58,15 @@ pipeline {
                 sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
             }
         }
+
+        stage('Trivy Scan') {
+            steps {
+                sh '''
+                    trivy image --exit-code 1 --severity HIGH,CRITICAL \
+                    ${DOCKER_IMAGE}:${DOCKER_TAG}
+                '''
+            }
+        }
     }
 
     post {
