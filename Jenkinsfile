@@ -1,43 +1,32 @@
 pipeline {
     agent any
+
     tools {
         nodejs 'NodeJS-22'
     }
+
     environment {
         DOCKER_IMAGE = 'chaine_devops'
-        DOCKER_TAG   = "${BUILD_NUMBER}"
+        DOCKER_TAG = "${BUILD_NUMBER}"
     }
+
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Clean Workspace') {
-            steps {
-                sh '''
-                    rm -rf node_modules package-lock.json .npm
-                    npm cache clean --force
-                '''
-            }
-        }
-
         stage('Install') {
             steps {
-                sh '''
-                    node --version
-                    npm --version
-                    npm install
-                    # Force la réinstallation des bindings natifs optionnels (fix bug rolldown)
-                    npm rebuild
-                '''
+                sh 'npm ci'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm run test -- --run'
+                sh 'npm run test'
             }
         }
 
@@ -51,15 +40,6 @@ pipeline {
             steps {
                 sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
             }
-        }
-    }
-
-    post {
-        failure {
-            echo "Pipeline échoué — vérifier les logs ci-dessus"
-        }
-        success {
-            echo "Pipeline réussi — image: ${DOCKER_IMAGE}:${DOCKER_TAG}"
         }
     }
 }
