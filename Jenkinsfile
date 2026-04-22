@@ -34,7 +34,7 @@ pipeline {
 
         stage('SonarCloud Analysis') {
             steps {
-                withSonarQubeEnv('SonarCloud') {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')])  {
                     sh '''
                         npx sonar-scanner \
                         -Dsonar.projectKey=chaine_devops \
