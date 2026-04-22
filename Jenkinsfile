@@ -18,12 +18,10 @@ pipeline {
             }
         }
 
-        // 👇 ICI tu ajoutes le clean
         stage('Clean Workspace') {
             steps {
                 sh '''
-                    rm -rf node_modules
-                    rm -rf package-lock.json
+                    rm -rf node_modules package-lock.json
                     npm cache clean --force
                 '''
             }
@@ -31,11 +29,7 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh '''
-                    rm -rf node_modules package-lock.json
-                    npm cache clean --force
-                    npm install --legacy-peer-deps
-                '''
+                sh 'npm install'
             }
         }
 
