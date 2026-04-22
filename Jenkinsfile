@@ -59,7 +59,7 @@ pipeline {
             }
         }
 
-        sstage('Trivy Scan') {
+        stage('Trivy Scan') {
             steps {
                 sh '''
                     docker run --rm \
